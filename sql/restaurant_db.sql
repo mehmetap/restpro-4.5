@@ -34,9 +34,12 @@ CREATE TABLE IF NOT EXISTS kuryeler (
     durum       ENUM('MUSAIT','GOREVDE','IZINLI') DEFAULT 'MUSAIT'
 ) ENGINE=InnoDB;
 
-INSERT INTO kuryeler (ad, soyad, telefon, arac_tipi, durum) VALUES
-    ('Mehmet', 'Yılmaz', '05051112233', 'Motosiklet', 'MUSAIT'),
-    ('Ahmet', 'Demir', '05052223344', 'Motosiklet', 'MUSAIT');
+INSERT INTO kuryeler (ad, soyad, telefon, arac_tipi, durum)
+SELECT 'Mehmet', 'Yılmaz', '05051112233', 'Motosiklet', 'MUSAIT'
+WHERE NOT EXISTS (SELECT 1 FROM kuryeler WHERE telefon = '05051112233');
+INSERT INTO kuryeler (ad, soyad, telefon, arac_tipi, durum)
+SELECT 'Ahmet', 'Demir', '05052223344', 'Motosiklet', 'MUSAIT'
+WHERE NOT EXISTS (SELECT 1 FROM kuryeler WHERE telefon = '05052223344');
 
 -- ------------------ SIPARISLER ------------------
 CREATE TABLE IF NOT EXISTS siparisler (
