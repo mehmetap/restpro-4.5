@@ -1,33 +1,58 @@
-# Müşteri Sipariş Takip Uygulaması
+# Restoran ve Müşteri Sipariş Takibi
 
-Bu uygulama müşterinin kendi siparişinin durumunu **canlı** olarak (4 saniyede bir otomatik güncellenerek) görebilmesi için ayrı bir arayüzdür. Restoran panelinden bağımsız çalışır; siparişleri sadece **okur**, değiştirmez.
+Java Swing ve MySQL ile eğitim amaçlı masaüstü prototipi.
+Müşteri ekranı sipariş numarasıyla durumu sorgular; restoran ekranı siparişleri
+listeler, durum değiştirir ve kurye atar. Yenileme periyotları müşteri için
+4, restoran için 5 saniyedir.
 
 ## Dosyalar
-- `Main.java` – Başlangıç noktası
-- `DBConnection.java` – MySQL bağlantı ayarları
-- `Siparis.java`, `SiparisDurumu.java` – Sipariş modeli
-- `SiparisTakipDAO.java` – Sipariş numarası / telefon ile sorgulama (salt okunur)
-- `Musteri.java`, `MusteriDAO.java` – Müşteri kayıt / giriş işlemleri (`customer_db`)
-- `MusteriTakipFrame.java` – Ana arayüz: sipariş no girip canlı durum takibi
-- `MusteriKayitDialog.java` – Yeni müşteri kaydı (ad, soyad, telefon, e-posta, adres)
+
+- `src/`: modeller, DAO sınıfları ve Swing ekranları.
+- `sql/customer_db.sql`: müşteri şeması ve örnek kayıt.
+- `sql/restaurant_db.sql`: restoran, kurye ve sipariş şeması.
+- `Main`: müşteri ekranı; `RestoranMain`: personel ekranı.
 
 ## Kurulum
-1. MySQL sunucunuzda `veritabani/customer_db.sql` dosyasını çalıştırın.
-2. `mysql-connector-j-x.x.x.jar` dosyasını indirin.
-3. `src/DBConnection.java` içindeki `HOST`, `KULLANICI`, `SIFRE` alanlarını güncelleyin (restoran-paneli ile aynı sunucu bilgileri).
 
-## Derleme ve Çalıştırma
-```bash
-cd musteri-takip/src
-javac -d ../out *.java
-cd ../out
-java -cp .:mysql-connector-j-x.x.x.jar Main      # Linux/Mac
-java -cp .;mysql-connector-j-x.x.x.jar Main      # Windows
+JDK 17, MySQL ve MySQL Connector/J gerekir. İki SQL dosyasını da çalıştırın:
+
+```sh
+mysql -u root -p < sql/customer_db.sql
+mysql -u root -p < sql/restaurant_db.sql
 ```
 
-## Özellikler
-- Sipariş numarası ile sorgulama
-- 5 adımlı görsel ilerleme çubuğu: Onaylandı → Hazırlanıyor → Hazır → Kurye Yolda → Teslim Edildi
-- Kurye bilgisi atandığında otomatik gösterilir
-- 4 saniyede bir otomatik yenilenen canlı takip (personel panelde durumu değiştirdiği anda müşteri ekranına yansır)
-- Yeni müşteri kaydı penceresi (iletişim bilgileri `customer_db.users` tablosuna kaydedilir)
+Connector/J JAR dosyasını `lib/` klasörüne koyun. Bağlantı için ortam değişkenleri:
+
+| Değişken | Varsayılan |
+|---|---|
+| `DB_HOST` | localhost |
+| `DB_PORT` | 3306 |
+| `DB_USER` | root |
+| `DB_PASSWORD` | boş |
+
+Linux/macOS: `export DB_PASSWORD='yerel-parolaniz'`
+PowerShell: `$env:DB_PASSWORD='yerel-parolaniz'`
+Parolayı kaynak dosyasına yazmayın. SQL dosyaları örnek veritabanı adlarını kullanır.
+
+## Derleme ve çalıştırma
+
+```sh
+javac -encoding UTF-8 -d out src/*.java
+# Linux/macOS
+java -cp 'out:lib/*' Main
+java -cp 'out:lib/*' RestoranMain
+# Windows
+java -cp 'out;lib/*' Main
+java -cp 'out;lib/*' RestoranMain
+```
+
+## Doğrulama ve sınırlar
+
+JDK 17 ile bütün Java kaynakları başarıyla derlendi.
+Yerel MySQL sunucusu olmadan veritabanı akışları doğrulanamaz. `SP-1001`
+örnek siparişiyle müşteri sorgulama ve personel durum değişikliğini test edin.
+Bu sürümde müşteri parolaları düz metindir ve personel ekranında kimlik doğrulama
+yoktur; gerçek müşteri verisiyle kullanmadan önce parola hashleme ve yetkilendirme gerekir.
+Swing içindeki bazı veritabanı çağrıları arayüz iş parçacığında çalışır;
+yavaş bağlantı ekranı bekletebilir. Bu bakım kapsamındaki derleme kontrolü bu
+entegrasyon ve arayüz testlerinin yerine geçmez.
