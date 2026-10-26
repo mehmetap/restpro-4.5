@@ -12,17 +12,15 @@ Bu uygulama müşterinin kendi siparişinin durumunu **canlı** olarak (4 saniye
 - `MusteriKayitDialog.java` – Yeni müşteri kaydı (ad, soyad, telefon, e-posta, adres)
 
 ## Kurulum
-1. MySQL sunucunuzda `veritabani/customer_db.sql` dosyasını çalıştırın.
+1. MySQL sunucunuzda `customer_db.sql` ve `restaurant_db.sql` dosyasını çalıştırın.
 2. `mysql-connector-j-x.x.x.jar` dosyasını indirin.
-3. `src/DBConnection.java` içindeki `HOST`, `KULLANICI`, `SIFRE` alanlarını güncelleyin (restoran-paneli ile aynı sunucu bilgileri).
+3. `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD` ortam değişkenlerini ayarlayın (restoran-paneli ile aynı sunucu bilgileri).
 
 ## Derleme ve Çalıştırma
 ```bash
-cd musteri-takip/src
-javac -d ../out *.java
-cd ../out
-java -cp .:mysql-connector-j-x.x.x.jar Main      # Linux/Mac
-java -cp .;mysql-connector-j-x.x.x.jar Main      # Windows
+javac -encoding UTF-8 -d out *.java
+java -cp "out:mysql-connector-j-x.x.x.jar" Main      # Linux/Mac
+java -cp "out;mysql-connector-j-x.x.x.jar" Main      # Windows
 ```
 
 ## Özellikler
@@ -31,3 +29,9 @@ java -cp .;mysql-connector-j-x.x.x.jar Main      # Windows
 - Kurye bilgisi atandığında otomatik gösterilir
 - 4 saniyede bir otomatik yenilenen canlı takip (personel panelde durumu değiştirdiği anda müşteri ekranına yansır)
 - Yeni müşteri kaydı penceresi (iletişim bilgileri `customer_db.users` tablosuna kaydedilir)
+
+
+## Test ve bilinen eksikler
+
+Yerel ortamda javac ve MySQL bulunmadığından derleme, SQL kurulumu ve arayüz entegrasyonu doğrulanmadı.
+MusteriDAO parolaları düz metin saklıyor; parola özetleme ve mevcut hesaplar için geçiş tamamlanmadan gerçek kullanıcılarla kullanılmamalıdır.
