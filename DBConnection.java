@@ -9,10 +9,10 @@ import java.sql.SQLException;
  */
 public class DBConnection {
 
-    private static final String HOST = "localhost";
-    private static final int PORT = 3306;
-    private static final String KULLANICI = "root";
-    private static final String SIFRE = "sifreniz";
+    private static final String HOST = env("DB_HOST", "localhost");
+    private static final String PORT = env("DB_PORT", "3306");
+    private static final String KULLANICI = env("DB_USER", "root");
+    private static final String SIFRE = env("DB_PASSWORD", "");
 
     private static final String RESTAURANT_DB = "restaurant_db";
     private static final String CUSTOMER_DB = "customer_db";
@@ -23,6 +23,11 @@ public class DBConnection {
         } catch (ClassNotFoundException e) {
             System.err.println("MySQL JDBC Driver bulunamadi. mysql-connector-j.jar dosyasini classpath'e ekleyin.");
         }
+    }
+
+    private static String env(String key, String fallback) {
+        String value = System.getenv(key);
+        return value == null ? fallback : value;
     }
 
     private static String buildUrl(String dbName) {
@@ -40,3 +45,4 @@ public class DBConnection {
         return DriverManager.getConnection(buildUrl(CUSTOMER_DB), KULLANICI, SIFRE);
     }
 }
+

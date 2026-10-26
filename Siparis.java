@@ -3,6 +3,8 @@ import java.time.LocalDateTime;
 
 public class Siparis {
     private int id;
+    private int musteriId;
+    private Integer kuryeId;
     private String siparisNo;
     private String musteriAdi;
     private String musteriTelefon;
@@ -15,6 +17,11 @@ public class Siparis {
     private String siparisDetayi;
     private LocalDateTime olusturmaTarihi;
     private LocalDateTime guncellemeTarihi;
+
+    public int getMusteriId() { return musteriId; }
+    public void setMusteriId(int musteriId) { this.musteriId = musteriId; }
+    public Integer getKuryeId() { return kuryeId; }
+    public void setKuryeId(Integer kuryeId) { this.kuryeId = kuryeId; }
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
